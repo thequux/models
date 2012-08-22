@@ -1,16 +1,19 @@
 // This is all licensed as CC-BY-SA. See COPYING for details
 // Note: these haven't been certified or anything. But they look about right
 
+$fa = 1;
+wall_thickness = 2;
+
 // Units: mm
 module schucko() {
   // results: origin is top min(x,y) corner
   // DIN 49440-1
   difference() {
     union() {
-      translate(v=[0,0,-1.5])
-	cube(size=[42, 42, 1.5]);
-      translate(v=[21,21,-19])
-	cylinder(r=21, h=19);
+      translate(v=[0,0,-wall_thickness])
+	cube(size=[(19.5 + wall_thickness) * 2, (19.5 + wall_thickness) * 2, wall_thickness]);
+      translate(v=[19.5 + wall_thickness, 19.5 + wall_thickness,-17.5 - wall_thickness])
+	cylinder(r=19.5 + wall_thickness, h=17.5 + wall_thickness);
     }
     
     
@@ -49,17 +52,17 @@ module schucko() {
 }
 
 module europlug() {
-  translate(v=[21,8.5,0]) {
+  translate(v=[19.5 + wall_thickness,8.5,0]) {
     difference() {
       union() {
-	translate(v=[0,0,-0.75])
-	  cube(size=[42, 17.5, 1.5], center=true);
+	translate(v=[0,0,wall_thickness / 2])
+	  cube(size=[(19.5 + wall_thickness) * 2, (17.5 + wall_thickness * 2), wall_thickness], center=true);
 	//	cube(42, 17.5, 17.5);
 	translate(v=[0,0,-8.75]) {
 	  intersection() {
-	    cube(size=[42, 17.5, 17.5], center=true);
+	    cube(size=[(19.5 + wall_thickness) * 2, 15.5 + wall_thickness * 2, 17.5], center=true);
 	    rotate(a=[0,0,45])
-	      cube(size=[30,30,17.5], center=true);
+	      cube(size=[30,28.5 + wall_thickness * 2,17.5], center=true);
 	  }
 	}
       }
@@ -82,8 +85,15 @@ module europlug() {
   }
 }
 
-schucko();
+difference() {
+  union() {
+    
+    schucko();
+    
+    translate(v=[0, 50, -2]) { // 45 is lined up.
+      europlug();
+    }
+  }
 
-translate(v=[0, 42, 0]) {
-  europlug();
+  //cube(size=[42,160,160], center=true);
 }
